@@ -1,6 +1,13 @@
 package POJOs;
 
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
+@JsonIgnoreProperties(ignoreUnknown = false)
 public class CurrencyExchangeRate {
 
     private String from_Currency_Code;
@@ -34,10 +41,7 @@ public class CurrencyExchangeRate {
     public String toString() {
         return super.toString();
     }
-//
-//    "Currency Exchange Rate{" +
-//            "From Currency Code: " + from_Currency_Code +
-//            "\n From Currency Name";
+
 
     public String getFrom_Currency_Code() {
         return from_Currency_Code;

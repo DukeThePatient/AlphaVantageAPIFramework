@@ -1,16 +1,18 @@
 package com.APITests.StepDefinitions;
 
-import POJOs.CurrencyExchangeRate;
 import com.APITests.Utilities.ConfigurationReader;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.junit.Assert;
 
 import java.util.Map;
 
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
 
 
 
@@ -19,6 +21,7 @@ public class Currency_Exchange_Rate_StepDefs {
     String baseURL = ConfigurationReader.get("baseURL");
     String apiKey;
     Response response;
+    JsonPath js;
 
     @Given("the an authorized API Key is provided")
     public void the_an_authorized_API_Key_is_provided() {
@@ -29,32 +32,40 @@ public class Currency_Exchange_Rate_StepDefs {
     public void the_user_sends_a_GET_request_with_the_following_data(Map<String, String> data) {
         response = given().accept(ContentType.JSON).queryParams(data).queryParam("apikey", apiKey)
                             .when().get(baseURL);
-        response.prettyPrint();
-        System.out.println("Body print passed");
+//        response.prettyPrint();
+
+        String responseStr = given().accept(ContentType.JSON).queryParams(data).queryParam("apikey", apiKey)
+                            .when().get(baseURL).asString();
+        responseStr = responseStr.replace(".", " ");
+
+        js = new JsonPath(responseStr);
+
+//        System.out.println("ResponseStr = " + responseStr);
+
+
     }
     @Then("the status code should be {int}")
     public void the_status_code_should_be(Integer int1) {
-        response.then().statusCode(200);
-        System.out.println("Status code passed");
+        response.then().statusCode(int1);
+
     }
 
     @Then("the From Currency name should be {string}")
     public void the_From_Currency_name_should_be(String str) {
-        CurrencyExchangeRate usdToXRP = response.body().as(CurrencyExchangeRate.class);
-
-        System.out.println(usdToXRP.toString());
+        String from_Currency_Name = js.getString("\"Realtime Currency Exchange Rate\".\"2  From_Currency Name\"");
+        Assert.assertThat(from_Currency_Name, is(str));
     }
 
     @Then("the To Currency name should be {string}")
     public void the_To_Currency_name_should_be(String str) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        String to_Currency_Name = js.getString("\"Realtime Currency Exchange Rate\".\"4  To_Currency Name\"");
+        Assert.assertThat(to_Currency_Name, is(str));
     }
 
     @Then("the Time Zone should be {string}")
     public void the_Time_Zone_should_be(String str) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        String timeZone = js.getString("\"Realtime Currency Exchange Rate\".\"7  Time Zone\"");
+        Assert.assertThat(timeZone, is(str));
     }
 
 }

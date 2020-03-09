@@ -10,6 +10,6 @@ Feature: Currency Exchange Rate
     | from_currency | XRP               |
     | to_currency   | USD               |
     Then the status code should be 200
-    And the From Currency name should be "United States Dollar"
-    And the To Currency name should be "Ripple"
+    And the From Currency name should be "Ripple"
+    And the To Currency name should be "United States Dollar"
     And the Time Zone should be "UTC"
