@@ -1,12 +1,12 @@
 package com.APITests.StepDefinitions;
 
-import com.APITests.Utilities.ConfigurationReader;
+
+import com.APITests.Utilities.UtilMethods;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import org.junit.Assert;
 
 import java.util.Map;
@@ -16,16 +16,12 @@ import static org.hamcrest.Matchers.*;
 
 
 
-public class Currency_Exchange_Rate_StepDefs {
+public class Currency_Exchange_Rate_StepDefs extends TestBase {
 
-    String baseURL = ConfigurationReader.get("baseURL");
-    String apiKey;
-    Response response;
-    JsonPath js;
 
     @Given("the an authorized API Key is provided")
     public void the_an_authorized_API_Key_is_provided() {
-        apiKey = ConfigurationReader.get("apiKey");
+        Assert.assertEquals(apiKey, "RQK7U4BBNG49PE55");
     }
 
     @When("the user sends a GET request with the following data:")
@@ -38,7 +34,7 @@ public class Currency_Exchange_Rate_StepDefs {
                             .when().get(baseURL).asString();
         responseStr = responseStr.replace(".", " ");
 
-        js = new JsonPath(responseStr);
+        js = UtilMethods.rawToJSON(responseStr);
 
 //        System.out.println("ResponseStr = " + responseStr);
 
